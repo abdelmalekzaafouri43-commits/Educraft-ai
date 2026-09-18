@@ -1,0 +1,370 @@
+/* Print styles for clean educational worksheets */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 15mm 15mm 15mm 15mm;
+  }
+
+  html, body {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    height: auto !important;
+    overflow: visible !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  
+  /* Hide interactive app UI elements during print */
+  header, nav, #bottom-nav, #sidebar, .no-print, button, .action-buttons, #generator-empty-canvas, #generator-loading {
+    display: none !important;
+  }
+
+  /* Unconstrain containers so full document pages flow cleanly */
+  main, #main-content, #screen-generator, #worksheet-canvas-column, #generated-result-container {
+    display: block !important;
+    position: static !important;
+    overflow: visible !important;
+    height: auto !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  .print-only-container {
+    display: block !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+  }
+
+  .worksheet-paper {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    page-break-after: auto;
+  }
+
+  .answer-key-section {
+    page-break-before: always;
+    break-before: page;
+    border-top: 1.5px dashed #64748b !important;
+  }
+
+  /* Ensure text lines and options don't break awkwardly across pages */
+  .worksheet-rule, [id^="item-"] {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+}
+
+/* Custom transitions and scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.4);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.7);
+}
+
+/* Touch feedback and active transitions */
+.tap-highlight-none {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Printable worksheet styling simulation */
+.worksheet-rule {
+  border-bottom: 1.5px dashed #cbd5e1;
+  height: 1.75rem;
+}
+
+/* ==========================================
+ * PRESET PREMIUM COLOR THEMES (CSS VARIABLES)
+ * ========================================== */
+:root, html, body, [data-theme="indigo"] {
+  --brand-50: 238 242 255;
+  --brand-100: 224 231 255;
+  --brand-200: 199 210 254;
+  --brand-300: 165 180 252;
+  --brand-400: 129 140 248;
+  --brand-500: 99 102 241;
+  --brand-600: 79 70 229;
+  --brand-700: 67 56 202;
+  --brand-800: 55 48 163;
+  --brand-900: 49 46 129;
+  --accent-400: 167 139 250;
+  --accent-500: 139 92 246;
+  --accent-600: 124 58 237;
+  --accent-700: 109 40 217;
+  --theme-glow-1: rgba(99, 102, 241, 0.32);
+  --theme-glow-2: rgba(168, 85, 247, 0.28);
+  --theme-glow-3: rgba(14, 165, 233, 0.2);
+  --theme-shadow: rgba(79, 70, 229, 0.35);
+  --theme-name: "Oxford Indigo";
+}
+
+[data-theme="emerald"] {
+  --brand-50: 236 253 245;
+  --brand-100: 209 250 229;
+  --brand-200: 167 243 208;
+  --brand-300: 110 231 183;
+  --brand-400: 52 211 153;
+  --brand-500: 16 185 129;
+  --brand-600: 5 150 105;
+  --brand-700: 4 120 87;
+  --brand-800: 6 95 70;
+  --brand-900: 6 78 59;
+  --accent-400: 45 212 191;
+  --accent-500: 20 184 166;
+  --accent-600: 13 148 136;
+  --accent-700: 15 118 110;
+  --theme-glow-1: rgba(16, 185, 129, 0.32);
+  --theme-glow-2: rgba(13, 148, 136, 0.28);
+  --theme-glow-3: rgba(4, 120, 87, 0.2);
+  --theme-shadow: rgba(5, 150, 105, 0.35);
+  --theme-name: "Emerald Ivy";
+}
+
+[data-theme="amethyst"] {
+  --brand-50: 250 245 255;
+  --brand-100: 243 232 255;
+  --brand-200: 233 213 255;
+  --brand-300: 216 180 254;
+  --brand-400: 192 132 252;
+  --brand-500: 168 85 247;
+  --brand-600: 147 51 234;
+  --brand-700: 126 34 206;
+  --brand-800: 107 33 168;
+  --brand-900: 88 28 135;
+  --accent-400: 232 121 249;
+  --accent-500: 217 70 239;
+  --accent-600: 192 38 211;
+  --accent-700: 162 28 175;
+  --theme-glow-1: rgba(168, 85, 247, 0.32);
+  --theme-glow-2: rgba(192, 38, 211, 0.28);
+  --theme-glow-3: rgba(126, 34, 206, 0.2);
+  --theme-shadow: rgba(147, 51, 234, 0.35);
+  --theme-name: "Royal Amethyst";
+}
+
+[data-theme="amber"] {
+  --brand-50: 255 251 235;
+  --brand-100: 254 243 199;
+  --brand-200: 253 230 138;
+  --brand-300: 252 211 77;
+  --brand-400: 251 191 36;
+  --brand-500: 245 158 11;
+  --brand-600: 217 119 6;
+  --brand-700: 180 83 9;
+  --brand-800: 146 64 14;
+  --brand-900: 120 53 15;
+  --accent-400: 251 146 60;
+  --accent-500: 249 115 22;
+  --accent-600: 234 88 12;
+  --accent-700: 194 65 12;
+  --theme-glow-1: rgba(245, 158, 11, 0.32);
+  --theme-glow-2: rgba(234, 88, 12, 0.28);
+  --theme-glow-3: rgba(180, 83, 9, 0.2);
+  --theme-shadow: rgba(217, 119, 6, 0.35);
+  --theme-name: "Bourbon Amber";
+}
+
+[data-theme="ocean"] {
+  --brand-50: 240 249 255;
+  --brand-100: 224 242 254;
+  --brand-200: 186 230 253;
+  --brand-300: 125 211 252;
+  --brand-400: 56 189 248;
+  --brand-500: 14 165 233;
+  --brand-600: 2 132 199;
+  --brand-700: 3 105 161;
+  --brand-800: 7 89 133;
+  --brand-900: 12 74 110;
+  --accent-400: 34 211 238;
+  --accent-500: 6 182 212;
+  --accent-600: 8 145 178;
+  --accent-700: 14 116 144;
+  --theme-glow-1: rgba(14, 165, 233, 0.32);
+  --theme-glow-2: rgba(6, 182, 212, 0.28);
+  --theme-glow-3: rgba(2, 132, 199, 0.2);
+  --theme-shadow: rgba(2, 132, 199, 0.35);
+  --theme-name: "Nordic Ocean";
+}
+
+[data-theme="rose"] {
+  --brand-50: 255 241 242;
+  --brand-100: 255 228 230;
+  --brand-200: 254 205 211;
+  --brand-300: 253 164 175;
+  --brand-400: 251 113 133;
+  --brand-500: 244 63 94;
+  --brand-600: 225 29 72;
+  --brand-700: 190 18 60;
+  --brand-800: 159 18 57;
+  --brand-900: 136 19 55;
+  --accent-400: 244 114 182;
+  --accent-500: 236 72 153;
+  --accent-600: 219 39 119;
+  --accent-700: 190 24 93;
+  --theme-glow-1: rgba(244, 63, 94, 0.32);
+  --theme-glow-2: rgba(219, 39, 119, 0.28);
+  --theme-glow-3: rgba(190, 18, 60, 0.2);
+  --theme-shadow: rgba(225, 29, 72, 0.35);
+  --theme-name: "Rose & Merlot";
+}
+
+/* Global Smooth Transitions for Theme Palette Changes */
+nav, header, aside, .chip, .screen-view, .glass-panel, .glass-chip, .glass-ai-bubble, .glass-user-bubble {
+  transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* ==========================================
+ * GLASSMORPHISM ("GLASS") STYLES FOR AI AREA
+ * ========================================== */
+.glass-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  box-shadow: 0 16px 40px -10px var(--theme-shadow, rgba(79, 70, 229, 0.2)), 0 1px 0 0 rgba(255, 255, 255, 0.9) inset;
+}
+
+.dark .glass-panel {
+  background: rgba(15, 23, 42, 0.68);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.55), 0 1px 0 0 rgba(255, 255, 255, 0.08) inset;
+}
+
+.glass-chip {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.dark .glass-chip {
+  background: rgba(30, 41, 59, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.glass-ai-bubble {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 4px 20px -2px var(--theme-shadow, rgba(99, 102, 241, 0.15)), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+}
+
+.dark .glass-ai-bubble {
+  background: rgba(30, 41, 59, 0.82);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+}
+
+.glass-user-bubble {
+  background: linear-gradient(135deg, rgb(var(--brand-600) / 0.94), rgb(var(--accent-600) / 0.94));
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 20px -2px var(--theme-shadow, rgba(79, 70, 229, 0.35));
+}
+
+.glass-dock {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 12px 36px -4px var(--theme-shadow, rgba(79, 70, 229, 0.15));
+}
+
+.dark .glass-dock {
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 12px 36px -4px rgba(0, 0, 0, 0.5);
+}
+
+/* Ambient glow orbs behind glass */
+.glass-glow-orb-1 {
+  position: absolute;
+  top: -12%;
+  left: 5%;
+  width: 380px;
+  height: 380px;
+  background: radial-gradient(circle, var(--theme-glow-1, rgba(99, 102, 241, 0.3)) 0%, rgba(99, 102, 241, 0) 70%);
+  filter: blur(50px);
+  pointer-events: none;
+  border-radius: 9999px;
+  z-index: 0;
+  transition: background 0.4s ease;
+}
+
+.glass-glow-orb-2 {
+  position: absolute;
+  bottom: 0%;
+  right: 5%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, var(--theme-glow-2, rgba(168, 85, 247, 0.25)) 0%, rgba(168, 85, 247, 0) 70%);
+  filter: blur(55px);
+  pointer-events: none;
+  border-radius: 9999px;
+  z-index: 0;
+  transition: background 0.4s ease;
+}
+
+.glass-glow-orb-3 {
+  position: absolute;
+  top: 40%;
+  right: 25%;
+  width: 260px;
+  height: 260px;
+  background: radial-gradient(circle, var(--theme-glow-3, rgba(14, 165, 233, 0.2)) 0%, rgba(14, 165, 233, 0) 70%);
+  filter: blur(40px);
+  pointer-events: none;
+  border-radius: 9999px;
+  z-index: 0;
+  transition: background 0.4s ease;
+}
+
+/* Theme Selection Card Highlight */
+.theme-card {
+  position: relative;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.theme-card:hover {
+  transform: translateY(-2px);
+}
+
+.theme-card.active-theme {
+  border-color: rgb(var(--brand-500));
+  box-shadow: 0 0 0 3px rgb(var(--brand-500) / 0.25), 0 8px 20px -4px var(--theme-shadow);
+}

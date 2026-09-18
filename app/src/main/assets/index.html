@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>EduCraft AI - English Worksheet Generator & Tutor</title>
+  
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: 'rgb(var(--brand-50) / <alpha-value>)',
+              100: 'rgb(var(--brand-100) / <alpha-value>)',
+              200: 'rgb(var(--brand-200) / <alpha-value>)',
+              300: 'rgb(var(--brand-300) / <alpha-value>)',
+              400: 'rgb(var(--brand-400) / <alpha-value>)',
+              500: 'rgb(var(--brand-500) / <alpha-value>)',
+              600: 'rgb(var(--brand-600) / <alpha-value>)',
+              700: 'rgb(var(--brand-700) / <alpha-value>)',
+              800: 'rgb(var(--brand-800) / <alpha-value>)',
+              900: 'rgb(var(--brand-900) / <alpha-value>)',
+            },
+            accent: {
+              400: 'rgb(var(--accent-400) / <alpha-value>)',
+              500: 'rgb(var(--accent-500) / <alpha-value>)',
+              600: 'rgb(var(--accent-600) / <alpha-value>)',
+              700: 'rgb(var(--accent-700) / <alpha-value>)',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="h-full bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans antialiased flex flex-col md:flex-row overflow-hidden tap-highlight-none">
+
+  <!-- ==================== DESKTOP / TABLET SIDEBAR (Always on the Left) ==================== -->
+  <aside id="sidebar" class="hidden md:flex flex-col w-64 lg:w-72 bg-white dark:bg-slate-850 dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 h-full p-4 shrink-0 no-print">
+    <!-- Brand Header -->
+    <div class="flex items-center space-x-3 px-3 py-4 border-b border-slate-100 dark:border-slate-700">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-accent-600 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-brand-500/20">
+        AI
+      </div>
+      <div>
+        <h1 class="font-bold text-slate-900 dark:text-white leading-tight">EduCraft AI</h1>
+        <p class="text-xs text-brand-600 dark:text-brand-400 font-medium">Worksheet & Tutor</p>
+      </div>
+    </div>
+
+    <!-- Free Badge -->
+    <div class="mt-4 mx-2 px-3 py-2 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-xl flex items-center space-x-2">
+      <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+      <span class="text-xs font-semibold text-emerald-700 dark:text-emerald-300">100% Free &amp; Unlocked</span>
+    </div>
+
+    <!-- Navigation Links -->
+    <nav class="mt-6 flex-1 space-y-1.5 px-2">
+      <button onclick="switchTab('generator')" class="nav-link w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-medium transition-colors text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-900/30" data-tab="generator">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+        </svg>
+        <span>Dashboard / Generator</span>
+      </button>
+
+      <button onclick="switchTab('saved')" class="nav-link w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-medium transition-colors text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50" data-tab="saved">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+        </svg>
+        <span>Saved Worksheets</span>
+        <span id="saved-count-badge" class="ml-auto text-xs bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 px-2 py-0.5 rounded-full font-semibold">0</span>
+      </button>
+
+      <button onclick="switchTab('tutor')" class="nav-link w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-medium transition-colors text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50" data-tab="tutor">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+        </svg>
+        <span>AI English Tutor</span>
+      </button>
+
+      <button onclick="switchTab('settings')" class="nav-link w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-medium transition-colors text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50" data-tab="settings">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+        <span>Settings</span>
+      </button>
+    </nav>
+
+    <!-- Quick User Profile footer in sidebar -->
+    <div class="pt-4 mt-auto border-t border-slate-100 dark:border-slate-700 flex items-center justify-between">
+      <div class="flex items-center space-x-2.5">
+        <div class="w-8 h-8 rounded-full bg-brand-100 dark:bg-brand-900/50 text-brand-600 dark:text-brand-300 font-bold text-xs flex items-center justify-center">
+          ED
+        </div>
+        <div class="text-xs">
+          <p class="font-semibold text-slate-800 dark:text-slate-200">Educator</p>
+          <p id="sidebar-theme-indicator" class="text-[10px] text-brand-600 dark:text-brand-400 font-medium">Oxford Indigo</p>
+        </div>
+      </div>
+      <div class="flex items-center space-x-1">
+        <button onclick="toggleThemeModal()" title="Change Premium Color Theme" class="p-1.5 rounded-lg text-slate-500 hover:text-brand-600 dark:hover:text-brand-300 hover:bg-brand-50 dark:hover:bg-slate-700 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4 4 4 0 014-4h1a4 4 0 014 4 4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+          </svg>
+        </button>
+        <button onclick="toggleDarkMode()" title="Toggle Dark/Light Mode" class="p-1.5 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+          <svg class="w-4 h-4 hidden dark:block text-amber-300" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" /></svg>
+          <svg class="w-4 h-4 block dark:hidden text-slate-600" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" /></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ==================== MAIN CONTENT AREA ==================== -->
+  <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+    
+    <!-- Mobile App Top Bar -->
+    <header class="md:hidden flex items-center justify-between px-4 py-3 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 shrink-0 no-print">
+      <div class="flex items-center space-x-2.5">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-brand-600 to-accent-600 flex items-center justify-center text-white font-bold text-sm shadow-sm">
+          AI
+        </div>
+        <div>
+          <h1 class="text-sm font-bold text-slate-900 dark:text-white leading-none">EduCraft AI</h1>
+          <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold uppercase tracking-wider">Free Generator</span>
+        </div>
+      </div>
+      <div class="flex items-center space-x-1">
+        <button onclick="toggleThemeModal()" title="Color Themes" class="p-2 rounded-full text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4 4 4 0 014-4h1a4 4 0 014 4 4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+          </svg>
+        </button>
+        <button onclick="toggleDarkMode()" title="Toggle Dark Mode" class="p-2 rounded-full text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+          <svg class="w-5 h-5 hidden dark:block text-amber-300" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" /></svg>
+          <svg class="w-5 h-5 block dark:hidden text-slate-600" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" /></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Content Sections Wrapper (Scrollable) -->
+    <div id="main-content" class="flex-1 overflow-y-auto pb-20 md:pb-6">
+      
+      <!-- ==================== SCREEN 1: DASHBOARD / GENERATOR ==================== -->
+      <section id="screen-generator" class="screen-view p-3 sm:p-5 lg:p-6 max-w-7xl mx-auto">
+        
+        <!-- Mobile View Jump Bar (< 768px) -->
+        <div class="md:hidden flex items-center justify-between mb-3.5 bg-slate-100 dark:bg-slate-800 p-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold no-print">
+          <button type="button" onclick="scrollToLeftDashboard()" class="flex-1 py-1.5 text-center rounded-lg bg-white dark:bg-slate-700 text-brand-600 dark:text-brand-300 shadow-xs flex items-center justify-center space-x-1">
+            <span>📋</span>
+            <span>Dashboard Board (Left)</span>
+          </button>
+          <button type="button" onclick="scrollToWorksheetPreview()" class="flex-1 py-1.5 text-center rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 flex items-center justify-center space-x-1">
+            <span>📄</span>
+            <span>Worksheet Preview</span>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-5 lg:gap-6 items-start">
+          
+          <!-- LEFT COLUMN: Dashboard Board (Always on the Left of the Screen) -->
+          <div id="left-dashboard-board" class="md:col-span-5 lg:col-span-5 md:sticky md:top-2 space-y-4 no-print">
+            
+            <!-- Dashboard Board Master Header Card -->
+            <div class="bg-gradient-to-r from-brand-50 via-brand-50/70 to-accent-50/50 dark:from-slate-800 dark:via-brand-950/40 dark:to-slate-800 p-4 rounded-2xl border border-brand-200/80 dark:border-brand-800/60 shadow-sm">
+              <div class="flex items-center justify-between mb-1">
+                <div class="flex items-center space-x-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-brand-600 dark:bg-brand-400 animate-pulse"></span>
+                  <span class="text-[11px] font-black uppercase tracking-widest text-brand-700 dark:text-brand-300">
+                    Dashboard Board &bull; Left
+                  </span>
+                </div>
+                <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                  ELA Master
+                </span>
+              </div>
+              <h2 class="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                Reading, Language &amp; Writing Studio
+              </h2>
+              <p class="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
+                Generate tailored pedagogical materials with variable grammar integration.
+              </p>
+            </div>
+
+            <!-- Dashboard Generator Form Card -->
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-4 sm:p-5 transition-all">
+              <form id="generator-form" onsubmit="handleGenerateWorksheet(event)" class="space-y-4">
+                
+                <!-- 1. CORE CONTENT FOCUS (Reading / Language / Writing / Integrated) -->
+                <div>
+                  <div class="flex items-center justify-between mb-1.5">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200">
+                      Content Pillar <span class="text-rose-500">*</span>
+                    </label>
+                    <span id="active-domain-label" class="text-[10px] font-bold text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-900/40 px-2 py-0.5 rounded-md border border-brand-200/60 dark:border-brand-800/60">
+                      Reading &amp; Comprehension
+                    </span>
+                  </div>
+                  
+                  <div class="grid grid-cols-3 gap-1.5 p-1 bg-slate-100 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold">
+                    <button 
+                      type="button" 
+                      id="domain-btn-reading" 
+                      onclick="selectContentDomain('reading')" 
+                      class="domain-btn py-2 px-1.5 rounded-lg text-center transition flex flex-col items-center justify-center gap-0.5 text-brand-700 dark:text-brand-300 bg-white dark:bg-slate-800 shadow-xs font-bold"
+                    >
+                      <span class="text-base">📖</span>
+                      <span class="text-[11px]">Reading</span>
+                    </button>
+                    <button 
+                      type="button" 
+                      id="domain-btn-language" 
+                      onclick="selectContentDomain('language')" 
+                      class="domain-btn py-2 px-1.5 rounded-lg text-center transition flex flex-col items-center justify-center gap-0.5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                    >
+                      <span class="text-base">🗣️</span>
+                      <span class="text-[11px]">Language</span>
+                    </button>
+                    <button 
+                      type="button" 
+                      id="domain-btn-writing" 
+                      onclick="selectContentDomain('writing')" 
+                      class="domain-btn py-2 px-1.5 rounded-lg text-center transition flex flex-col items-center justify-center gap-0.5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                    >
+                      <span class="text-base">✍️</span>
+                      <span class="text-[11px]">Writing</span>
+                    </button>
+                  </div>
+
+                  <div class="mt-2 flex items-center justify-between">
+                    <button 
+                      type="button" 
+                      id="domain-btn-integrated" 
+                      onclick="selectContentDomain('integrated')" 
+                      class="text-[11px] font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 flex items-center space-x-1 transition group"
+                    >
+                      <span>🌟</span>
+                      <span class="group-hover:underline">Or generate Integrated ELA (Reading + Language + Writing)</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- 2. TOPIC OR THEME INPUT -->
+                <div>
+                  <div class="flex items-center justify-between mb-1.5">
+                    <label for="topic-input" class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200">
+                      Topic / Text Theme <span class="text-rose-500">*</span>
+                    </label>
+                    <span id="topic-field-hint" class="text-[10px] text-slate-400 italic">Passage &amp; context topic</span>
+                  </div>
+                  <input 
+                    type="text" 
+                    id="topic-input" 
+                    required
+                    placeholder="e.g., Deep Sea Ocean Trenches & Marine Ecosystems" 
+                    class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500 outline-none transition"
+                  />
+                </div>
+
+                <!-- DYNAMIC PRESETS FOR CHOSEN DOMAIN -->
+                <div>
+                  <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">Domain Presets:</span>
+                  <div id="domain-presets-container" class="flex flex-wrap gap-1.5">
+                    <!-- Populated dynamically by app.js -->
+                  </div>
+                </div>
+
+                <!-- 3. VARIABLE GRAMMAR INTEGRATION (Making Grammar Variable) -->
+                <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-700 space-y-2.5">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-1.5">
+                      <span class="text-xs font-bold text-slate-800 dark:text-white uppercase tracking-wider flex items-center gap-1">
+                        <span>🧩</span> Variable Grammar Focus
+                      </span>
+                      <span id="grammar-status-badge" class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-accent-500/10 text-accent-600 dark:text-accent-400 border border-accent-500/20">
+                        Variable Active
+                      </span>
+                    </div>
+                    <!-- Randomize / Vary Grammar button -->
+                    <button 
+                      type="button" 
+                      onclick="randomizeGrammarFocus()" 
+                      title="Randomly vary the target grammar dimension" 
+                      class="px-2 py-1 text-[11px] font-bold rounded-lg bg-white dark:bg-slate-800 hover:bg-brand-50 dark:hover:bg-brand-900/40 text-brand-600 dark:text-brand-300 border border-slate-200 dark:border-slate-700 transition flex items-center space-x-1 shadow-xs active:scale-95"
+                    >
+                      <span>🎲</span>
+                      <span>Vary Grammar</span>
+                    </button>
+                  </div>
+
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <div>
+                      <label for="grammar-variable-target" class="block text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                        Target Grammar Dimension
+                      </label>
+                      <select 
+                        id="grammar-variable-target" 
+                        onchange="handleGrammarTargetChange()" 
+                        class="w-full px-2.5 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-brand-500 outline-none"
+                      >
+                        <option value="none">None (Pure ELA - No Grammar Bias)</option>
+                        <option value="tenses" selected>Variable: Verb Tenses &amp; Aspect (Past/Present/Perfect)</option>
+                        <option value="conditionals">Variable: Conditionals &amp; Hypotheticals (Zero - 3rd)</option>
+                        <option value="passive_voice">Variable: Active vs. Passive Voice &amp; Inversion</option>
+                        <option value="relative_clauses">Variable: Relative &amp; Complex Subordinate Clauses</option>
+                        <option value="modals">Variable: Modal Verbs (Deduction, Obligation &amp; Nuance)</option>
+                        <option value="subject_verb">Variable: Subject-Verb Concord &amp; Quantifiers</option>
+                        <option value="reported_speech">Variable: Direct vs. Reported / Indirect Speech</option>
+                        <option value="sentence_structure">Variable: Syntactic Sentence Types &amp; Coordination</option>
+                        <option value="punctuation_mechanics">Variable: Punctuation, Semicolons &amp; Transitions</option>
+                        <option value="custom">Variable: Custom Grammar Rule...</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label for="grammar-variable-mode" class="block text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                        Variable Intensity
+                      </label>
+                      <select 
+                        id="grammar-variable-mode" 
+                        onchange="updateGrammarHint()" 
+                        class="w-full px-2.5 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-brand-500 outline-none"
+                      >
+                        <option value="balanced" selected>Balanced (Passage + Task + Writing Rubric)</option>
+                        <option value="embedded">Embedded in Reading Passage &amp; Rubric</option>
+                        <option value="intensive">Intensive Syntax Analysis &amp; Conversion</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Custom grammar target input (hidden unless custom selected) -->
+                  <div id="custom-grammar-container" class="hidden pt-1">
+                    <input 
+                      type="text" 
+                      id="custom-grammar-input" 
+                      placeholder="Enter custom grammar focus (e.g. Subjunctive Mood, Gerunds vs Infinitives)" 
+                      class="w-full px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs outline-none focus:ring-2 focus:ring-brand-500"
+                    />
+                  </div>
+
+                  <!-- Live explanation of how the variable grammar is applied -->
+                  <div class="flex items-start space-x-2 pt-0.5 text-[11px] text-slate-600 dark:text-slate-400">
+                    <span class="text-brand-500 font-bold shrink-0">ℹ️</span>
+                    <p id="grammar-focus-hint" class="italic leading-snug">
+                      Grammar target will dynamically shape reading analysis, vocabulary discovery, and writing prompt criteria.
+                    </p>
+                  </div>
+                </div>
+
+                <!-- 4. GRADE LEVEL & ADAPTIVE FORMAT -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-0.5">
+                  <div>
+                    <label for="grade-level" class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1">
+                      Grade Level
+                    </label>
+                    <select id="grade-level" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white text-xs sm:text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                      <option value="Elementary (Grades 1-5)">Elementary (Grades 1-5)</option>
+                      <option value="Middle School (Grades 6-8)" selected>Middle School (Grades 6-8)</option>
+                      <option value="High School (Grades 9-12)">High School (Grades 9-12)</option>
+                      <option value="ESL / Adult Beginner">ESL Beginner (A1-A2)</option>
+                      <option value="ESL / Intermediate">ESL Intermediate (B1-B2)</option>
+                      <option value="Advanced / IELTS Prep">Advanced / C1-C2 Prep</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label for="worksheet-type" class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1">
+                      Exercise Format
+                    </label>
+                    <select id="worksheet-type" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white text-xs sm:text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                      <!-- Populated dynamically according to domain -->
+                      <option value="Passage &amp; Text-Dependent Questions" selected>Passage &amp; Text Questions</option>
+                      <option value="Multiple Choice Comprehension">Multiple Choice (MCQ)</option>
+                      <option value="Inference &amp; Text Evidence">Inference &amp; Text Evidence</option>
+                      <option value="Main Idea &amp; Summary Breakdown">Main Idea &amp; Summary</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- 5. QUESTION COUNT & ANSWER KEY -->
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label for="question-count" class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1">
+                      Items / Tasks
+                    </label>
+                    <select id="question-count" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white text-xs sm:text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                      <option value="5">5 Items</option>
+                      <option value="8" selected>8 Items</option>
+                      <option value="10">10 Items</option>
+                      <option value="12">12 Items</option>
+                    </select>
+                  </div>
+                  <div class="flex items-end pb-2">
+                    <label class="flex items-center cursor-pointer select-none space-x-2">
+                      <input type="checkbox" id="include-answers" checked class="w-4 h-4 text-brand-600 rounded focus:ring-brand-500 border-slate-300 dark:border-slate-600 dark:bg-slate-900" />
+                      <span class="text-xs font-semibold text-slate-700 dark:text-slate-300">Answer Key &amp; Rubric</span>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- GENERATE ACTION BUTTON -->
+                <button 
+                  type="submit" 
+                  id="btn-generate" 
+                  class="w-full mt-2 flex items-center justify-center space-x-2 bg-gradient-to-r from-brand-600 to-accent-600 hover:from-brand-700 hover:to-accent-700 text-white font-bold py-3.5 px-5 rounded-xl shadow-lg shadow-brand-500/25 transition-all transform active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  <span id="btn-generate-text">Generate ELA Worksheet</span>
+                </button>
+              </form>
+            </div>
+
+            <!-- Left Dashboard Board Quick Info Card -->
+            <div class="bg-slate-100 dark:bg-slate-800/60 rounded-2xl p-4 border border-slate-200 dark:border-slate-700 flex items-center justify-between text-xs text-slate-600 dark:text-slate-400">
+              <div class="flex items-center space-x-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                <span class="font-medium">Direct A4 Print &amp; PDF</span>
+              </div>
+              <button onclick="switchTab('tutor')" class="text-brand-600 dark:text-brand-400 hover:underline font-semibold flex items-center space-x-1">
+                <span>AI Tutor Chat</span>
+                <span>&rarr;</span>
+              </button>
+            </div>
+
+          </div>
+
+          <!-- RIGHT COLUMN: Worksheet Output / Live Paper Canvas -->
+          <div id="worksheet-canvas-column" class="md:col-span-7 lg:col-span-7 space-y-4">
+            
+            <!-- Skeleton / Loading Indicator (Frosted Glass) -->
+            <div id="generator-loading" class="hidden glass-panel p-8 rounded-3xl animate-pulse space-y-4 no-print">
+              <div class="flex items-center space-x-3 text-brand-600 dark:text-brand-400 font-semibold mb-6">
+                <svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                </svg>
+                <span>Synthesizing pedagogical worksheet with AI engine...</span>
+              </div>
+              <div class="h-6 bg-slate-200/80 dark:bg-slate-700/80 rounded-md w-2/3"></div>
+              <div class="h-4 bg-slate-200/80 dark:bg-slate-700/80 rounded-md w-full"></div>
+              <div class="h-4 bg-slate-200/80 dark:bg-slate-700/80 rounded-md w-4/5"></div>
+              <div class="space-y-3 pt-4">
+                <div class="h-4 bg-slate-100/80 dark:bg-slate-700/50 rounded-md w-11/12"></div>
+                <div class="h-4 bg-slate-100/80 dark:bg-slate-700/50 rounded-md w-10/12"></div>
+                <div class="h-4 bg-slate-100/80 dark:bg-slate-700/50 rounded-md w-full"></div>
+              </div>
+            </div>
+
+            <!-- Empty / Ready Canvas Guide -->
+            <div id="generator-empty-canvas" class="p-8 sm:p-12 text-center bg-white dark:bg-slate-800 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700">
+              <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center text-brand-600">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <h3 class="text-lg font-bold text-slate-900 dark:text-white">Live ELA Worksheet Canvas</h3>
+              <p class="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto mt-1.5 mb-6 leading-relaxed">
+                Configure your reading, language, or writing goals on the <strong class="text-brand-600 dark:text-brand-400">Dashboard Board on the left</strong> with variable grammar integration, then click <span class="font-semibold text-slate-700 dark:text-slate-300">"Generate ELA Worksheet"</span> to display your formatted printable sheet here.
+              </p>
+              <div class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
+                <span>⚡ Print-ready A4 formatting &bull; Answer key included</span>
+              </div>
+            </div>
+
+            <!-- Generated Worksheet Result Section -->
+            <div id="generated-result-container" class="hidden">
+              <!-- Action Buttons Bar -->
+              <div class="flex flex-wrap items-center justify-between gap-3 mb-4 bg-slate-100 dark:bg-slate-800/80 p-3 rounded-xl border border-slate-200 dark:border-slate-700 no-print">
+                <div class="flex items-center space-x-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                  <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Ready to Print or Save</span>
+                </div>
+                <div class="flex flex-wrap items-center gap-2">
+                  <button 
+                    onclick="triggerDirectBrowserPrintPDF()" 
+                    data-testid="direct_browser_print_pdf_button"
+                    title="Open browser print dialog to save as PDF or send to printer"
+                    class="flex items-center space-x-1.5 text-xs font-bold px-3.5 py-2 rounded-lg bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white shadow-md shadow-rose-500/20 transition active:scale-95"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span>Print to PDF</span>
+                  </button>
+                  <button 
+                    onclick="saveCurrentWorksheet()" 
+                    title="Save to local library"
+                    class="flex items-center space-x-1.5 text-xs font-semibold px-3 py-2 rounded-lg bg-brand-600 hover:bg-brand-700 text-white shadow-sm transition"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" /></svg>
+                    <span>Save to Library</span>
+                  </button>
+                  <button 
+                    onclick="printCurrentWorksheet()" 
+                    title="Print via Android Print Service or standard printer"
+                    class="flex items-center space-x-1.5 text-xs font-semibold px-3 py-2 rounded-lg bg-slate-800 dark:bg-slate-700 hover:bg-slate-900 text-white shadow-sm transition"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
+                    <span>Print Device</span>
+                  </button>
+                  <button 
+                    onclick="copyWorksheetText()" 
+                    title="Copy worksheet text"
+                    class="flex items-center space-x-1.5 text-xs font-semibold px-3 py-2 rounded-lg bg-white dark:bg-slate-700 hover:bg-slate-50 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600 transition"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
+                    <span>Copy</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Printable Sheet Paper Container -->
+              <div id="worksheet-paper-container" class="worksheet-paper bg-white dark:bg-slate-850 p-6 sm:p-10 rounded-2xl shadow-md border border-slate-200 dark:border-slate-700 font-sans text-slate-900 dark:text-slate-100">
+                <!-- Dynamic Worksheet Rendered by app.js -->
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ==================== SCREEN 2: SAVED WORKSHEETS ==================== -->
+      <section id="screen-saved" class="screen-view hidden p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div>
+            <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">Saved Worksheets</h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Access, print, and export worksheets stored locally on your device.</p>
+          </div>
+          <div class="flex items-center space-x-2">
+            <input 
+              type="text" 
+              id="search-saved" 
+              oninput="filterSavedWorksheets(this.value)"
+              placeholder="Search worksheets..." 
+              class="px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-brand-500"
+            />
+          </div>
+        </div>
+
+        <div id="saved-list" class="space-y-3">
+          <!-- Populated dynamically by app.js -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="saved-empty-state" class="hidden text-center py-16 px-4 bg-white dark:bg-slate-800 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700">
+          <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center text-brand-600">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+          </div>
+          <h3 class="text-lg font-bold text-slate-900 dark:text-white">No Saved Worksheets</h3>
+          <p class="text-sm text-slate-500 dark:text-slate-400 max-w-sm mx-auto mt-1 mb-6">Generated worksheets will appear here once you save them.</p>
+          <button onclick="switchTab('generator')" class="px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold text-sm shadow transition">
+            Generate First Worksheet
+          </button>
+        </div>
+      </section>
+
+      <!-- ==================== SCREEN 3: AI ENGLISH TUTOR (FROSTED GLASS) ==================== -->
+      <section id="screen-tutor" class="screen-view hidden flex flex-col h-full max-w-4xl mx-auto p-2 sm:p-5 relative glass-container">
+        <!-- Ambient Glowing Depth Orbs for real glass refraction -->
+        <div class="glass-glow-orb-1"></div>
+        <div class="glass-glow-orb-2"></div>
+        <div class="glass-glow-orb-3"></div>
+
+        <!-- Main Frosted Glass AI Panel -->
+        <div class="glass-panel rounded-3xl p-4 sm:p-6 flex flex-col h-full relative z-10 shadow-2xl transition-all">
+          
+          <!-- Tutor Header (Glass Pill) -->
+          <div class="flex items-center justify-between pb-3.5 border-b border-white/40 dark:border-white/10 shrink-0">
+            <div class="flex items-center space-x-3">
+              <div class="relative">
+                <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-brand-600 to-accent-600 flex items-center justify-center text-white font-extrabold text-base shadow-lg shadow-brand-500/25 ring-2 ring-white/60 dark:ring-white/10">
+                  🎓
+                </div>
+                <span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-white dark:border-slate-800 rounded-full animate-pulse"></span>
+              </div>
+              <div>
+                <div class="flex items-center space-x-2">
+                  <h2 class="text-base font-bold text-slate-900 dark:text-white leading-tight">Alex &bull; AI English Tutor</h2>
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-500/10 text-brand-700 dark:text-brand-300 border border-brand-500/20">AI</span>
+                </div>
+                <p class="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Online &bull; Interactive ESL &amp; Grammar Coach</p>
+              </div>
+            </div>
+            <button onclick="clearChatHistory()" class="text-xs text-slate-500 dark:text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 transition font-medium px-3 py-1.5 rounded-xl hover:bg-white/40 dark:hover:bg-slate-800/40">
+              Clear Chat
+            </button>
+          </div>
+
+          <!-- Quick Prompt Chips (Frosted Glass Pills) -->
+          <div class="py-2.5 flex items-center space-x-2 overflow-x-auto no-scrollbar shrink-0">
+            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Prompts:</span>
+            <button onclick="sendQuickPrompt('Give me a creative writing prompt for beginners')" class="glass-chip shrink-0 px-3 py-1 text-xs rounded-full text-brand-700 dark:text-brand-300 hover:bg-brand-50/80 dark:hover:bg-brand-900/50 transition">
+              ✍️ Writing Prompt
+            </button>
+            <button onclick="sendQuickPrompt('Explain the difference between \"their\", \"there\", and \"they\'re\" with examples')" class="glass-chip shrink-0 px-3 py-1 text-xs rounded-full text-slate-700 dark:text-slate-200 hover:bg-white/80 dark:hover:bg-slate-700/60 transition">
+              📖 Grammar Rule
+            </button>
+            <button onclick="sendQuickPrompt('Give me a 3-question mini grammar quiz to test my skills')" class="glass-chip shrink-0 px-3 py-1 text-xs rounded-full text-slate-700 dark:text-slate-200 hover:bg-white/80 dark:hover:bg-slate-700/60 transition">
+              🎯 Speed Quiz
+            </button>
+            <button onclick="sendQuickPrompt('Teach me three common English idioms and how to use them')" class="glass-chip shrink-0 px-3 py-1 text-xs rounded-full text-slate-700 dark:text-slate-200 hover:bg-white/80 dark:hover:bg-slate-700/60 transition">
+              💡 Useful Idioms
+            </button>
+            <button onclick="sendQuickPrompt('Can you explain when to use \"who\" versus \"whom\"?')" class="glass-chip shrink-0 px-3 py-1 text-xs rounded-full text-slate-700 dark:text-slate-200 hover:bg-white/80 dark:hover:bg-slate-700/60 transition">
+              🔍 Who vs Whom
+            </button>
+          </div>
+
+          <!-- Chat Messages Container -->
+          <div id="chat-messages" class="flex-1 overflow-y-auto py-4 space-y-4 pr-1">
+            <!-- Populated by app.js with frosted glass bubbles -->
+          </div>
+
+          <!-- Chat Input Form (Floating Frosted Glass Dock) -->
+          <form id="chat-form" onsubmit="handleSendChatMessage(event)" class="pt-2 shrink-0">
+            <div class="glass-dock p-1.5 sm:p-2 rounded-2xl flex items-center space-x-2">
+              <input 
+                type="text" 
+                id="chat-input" 
+                placeholder="Ask Alex a grammar question, request an essay topic, or paste text..." 
+                autocomplete="off"
+                class="flex-1 px-3 py-2 sm:py-2.5 bg-transparent text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-sm outline-none"
+              />
+              <button 
+                type="submit" 
+                class="p-2.5 sm:p-3 bg-gradient-to-r from-brand-600 to-accent-600 hover:from-brand-700 hover:to-accent-700 active:scale-95 text-white rounded-xl shadow-md shadow-brand-500/25 transition shrink-0"
+                title="Send Message"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                </svg>
+              </button>
+            </div>
+          </form>
+
+        </div>
+      </section>
+
+      <!-- ==================== SCREEN 4: SETTINGS ==================== -->
+      <section id="screen-settings" class="screen-view hidden p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto">
+        <div class="mb-6">
+          <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">App Settings</h2>
+          <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Configure profile, preferences, external API options, and manage local data.</p>
+        </div>
+
+        <div class="space-y-6">
+          <!-- User Profile Section -->
+          <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5 sm:p-6 shadow-sm">
+            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-4">User Profile</h3>
+            <div class="flex items-center space-x-4">
+              <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-brand-600 to-accent-600 flex items-center justify-center text-white font-extrabold text-xl shadow">
+                ED
+              </div>
+              <div class="flex-1">
+                <h4 class="font-bold text-slate-900 dark:text-white text-base">Teacher Jane</h4>
+                <p class="text-xs text-brand-600 dark:text-brand-400 font-medium">English Educator &bull; 100% Free Plan</p>
+                <p class="text-xs text-slate-400 mt-0.5">Device Local Storage Enabled</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Appearance & Premium Color Themes -->
+          <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5 sm:p-6 shadow-sm">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h3 class="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Appearance &amp; Premium Themes</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Customize your interface with curated, high-contrast academic themes</p>
+              </div>
+              <!-- Dark Mode Switch -->
+              <div class="flex items-center space-x-2.5">
+                <span class="text-xs font-semibold text-slate-600 dark:text-slate-300">Dark Mode</span>
+                <button onclick="toggleDarkMode()" id="settings-dark-toggle" class="relative inline-flex h-6 w-11 items-center rounded-full bg-slate-300 dark:bg-brand-600 transition-colors" title="Toggle Dark/Light">
+                  <span class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform translate-x-1 dark:translate-x-6"></span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Premium Themes Grid -->
+            <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-700">
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
+                  <span class="text-brand-600 dark:text-brand-400">🎨</span> Premium Color Palettes
+                </span>
+                <span id="current-theme-label" class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-brand-50 dark:bg-brand-900/40 text-brand-700 dark:text-brand-300 border border-brand-200 dark:border-brand-800">
+                  Oxford Indigo
+                </span>
+              </div>
+
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-3" id="theme-selection-grid">
+                <!-- Theme 1: Oxford Indigo -->
+                <div onclick="selectColorTheme('indigo')" data-theme-id="indigo" class="theme-card active-theme p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700">
+                  <div class="h-2 rounded-full w-full bg-gradient-to-r from-[#4f46e5] to-[#7c3aed] mb-2.5 shadow-sm"></div>
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-1.5">
+                      <span class="w-3 h-3 rounded-full bg-[#4f46e5] ring-2 ring-white dark:ring-slate-800"></span>
+                      <span class="w-3 h-3 rounded-full bg-[#7c3aed]"></span>
+                    </div>
+                    <span class="theme-check text-brand-600 dark:text-brand-400 text-xs font-extrabold">✓</span>
+                  </div>
+                  <p class="text-xs font-bold text-slate-800 dark:text-white mt-2">Oxford Indigo</p>
+                  <p class="text-[10px] text-slate-500 dark:text-slate-400">Royal Academic</p>
+                </div>
+
+                <!-- Theme 2: Emerald Ivy -->
+                <div onclick="selectColorTheme('emerald')" data-theme-id="emerald" class="theme-card p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700">
+                  <div class="h-2 rounded-full w-full bg-gradient-to-r from-[#059669] to-[#0d9488] mb-2.5 shadow-sm"></div>
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-1.5">
+                      <span class="w-3 h-3 rounded-full bg-[#059669] ring-2 ring-white dark:ring-slate-800"></span>
+                      <span class="w-3 h-3 rounded-full bg-[#0d9488]"></span>
+                    </div>
+                    <span class="theme-check hidden text-brand-600 dark:text-brand-400 text-xs font-extrabold">✓</span>
+                  </div>
+                  <p class="text-xs font-bold text-slate-800 dark:text-white mt-2">Emerald Ivy</p>
+                  <p class="text-[10px] text-slate-500 dark:text-slate-400">Cambridge Prep</p>
+                </div>
+
+                <!-- Theme 3: Royal Amethyst -->
+                <div onclick="selectColorTheme('amethyst')" data-theme-id="amethyst" class="theme-card p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700">
+                  <div class="h-2 rounded-full w-full bg-gradient-to-r from-[#9333ea] to-[#c026d3] mb-2.5 shadow-sm"></div>
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-1.5">
+                      <span class="w-3 h-3 rounded-full bg-[#9333ea] ring-2 ring-white dark:ring-slate-800"></span>
+                      <span class="w-3 h-3 rounded-full bg-[#c026d3]"></span>
+                    </div>
+                    <span class="theme-check hidden text-brand-600 dark:text-brand-400 text-xs font-extrabold">✓</span>
+                  </div>
+                  <p class="text-xs font-bold text-slate-800 dark:text-white mt-2">Royal Amethyst</p>
+                  <p class="text-[10px] text-slate-500 dark:text-slate-400">Imperial Literature</p>
+                </div>
+
+                <!-- Theme 4: Bourbon Amber -->
+                <div onclick="selectColorTheme('amber')" data-theme-id="amber" class="theme-card p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700">
+                  <div class="h-2 rounded-full w-full bg-gradient-to-r from-[#d97706] to-[#ea580c] mb-2.5 shadow-sm"></div>
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-1.5">
+                      <span class="w-3 h-3 rounded-full bg-[#d97706] ring-2 ring-white dark:ring-slate-800"></span>
+                      <span class="w-3 h-3 rounded-full bg-[#ea580c]"></span>
+                    </div>
+                    <span class="theme-check hidden text-brand-600 dark:text-brand-400 text-xs font-extrabold">✓</span>
+                  </div>
+                  <p class="text-xs font-bold text-slate-800 dark:text-white mt-2">Bourbon Amber</p>
+                  <p class="text-[10px] text-slate-500 dark:text-slate-400">Vintage Academy</p>
+                </div>
+
+                <!-- Theme 5: Nordic Ocean -->
+                <div onclick="selectColorTheme('ocean')" data-theme-id="ocean" class="theme-card p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700">
+                  <div class="h-2 rounded-full w-full bg-gradient-to-r from-[#0284c7] to-[#0891b2] mb-2.5 shadow-sm"></div>
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-1.5">
+                      <span class="w-3 h-3 rounded-full bg-[#0284c7] ring-2 ring-white dark:ring-slate-800"></span>
+                      <span class="w-3 h-3 rounded-full bg-[#0891b2]"></span>
+                    </div>
+                    <span class="theme-check hidden text-brand-600 dark:text-brand-400 text-xs font-extrabold">✓</span>
+                  </div>
+                  <p class="text-xs font-bold text-slate-800 dark:text-white mt-2">Nordic Ocean</p>
+                  <p class="text-[10px] text-slate-500 dark:text-slate-400">Arctic Precision</p>
+                </div>
+
+                <!-- Theme 6: Rose & Merlot -->
+                <div onclick="selectColorTheme('rose')" data-theme-id="rose" class="theme-card p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700">
+                  <div class="h-2 rounded-full w-full bg-gradient-to-r from-[#e11d48] to-[#db2777] mb-2.5 shadow-sm"></div>
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-1.5">
+                      <span class="w-3 h-3 rounded-full bg-[#e11d48] ring-2 ring-white dark:ring-slate-800"></span>
+                      <span class="w-3 h-3 rounded-full bg-[#db2777]"></span>
+                    </div>
+                    <span class="theme-check hidden text-brand-600 dark:text-brand-400 text-xs font-extrabold">✓</span>
+                  </div>
+                  <p class="text-xs font-bold text-slate-800 dark:text-white mt-2">Rose &amp; Merlot</p>
+                  <p class="text-[10px] text-slate-500 dark:text-slate-400">Editorial Luxury</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- External AI API Configuration (Placeholder & optional user key) -->
+          <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5 sm:p-6 shadow-sm">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">External AI Integration</h3>
+              <span class="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full">Works Out of the Box</span>
+            </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">
+              The app includes built-in realistic pedagogical generator logic, and placeholder integration methods for Google Gemini API or OpenAI API in <code class="text-brand-600 dark:text-brand-400">app.js</code>. You can also paste an optional API key below to override default calls.
+            </p>
+            <div class="space-y-3">
+              <div>
+                <label for="user-gemini-key" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Optional Gemini API Key</label>
+                <input 
+                  type="password" 
+                  id="user-gemini-key" 
+                  placeholder="AIzaSy..." 
+                  onchange="saveApiKey(this.value)"
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-sm text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-brand-500"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Data Management -->
+          <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5 sm:p-6 shadow-sm">
+            <h3 class="text-sm font-bold uppercase tracking-wider text-rose-500 mb-3">Storage &amp; Data Management</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">
+              All generated worksheets and conversations are saved securely in your device's Local Storage.
+            </p>
+            <div class="flex flex-wrap gap-3">
+              <button onclick="exportAllDataJson()" class="px-4 py-2 text-xs font-semibold rounded-xl bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 text-slate-700 dark:text-slate-200 transition">
+                Export All Data (JSON)
+              </button>
+              <button onclick="clearAppStorage()" class="px-4 py-2 text-xs font-semibold rounded-xl bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 text-rose-600 dark:text-rose-300 border border-rose-200 dark:border-rose-800 transition">
+                Clear All Saved Data &amp; Reset
+              </button>
+            </div>
+          </div>
+
+          <!-- About info -->
+          <div class="text-center pt-4 text-xs text-slate-400 space-y-1">
+            <p class="font-semibold text-slate-500 dark:text-slate-400">EduCraft AI English Worksheet Generator &amp; Tutor v1.2.0</p>
+            <p>Hybrid SPA Architecture &bull; HTML5 &bull; Tailwind CSS &bull; Modern ES6+ JavaScript</p>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ==================== MOBILE BOTTOM TAB NAVIGATION ==================== -->
+    <nav id="bottom-nav" class="md:hidden absolute bottom-0 inset-x-0 bg-white/95 dark:bg-slate-850/95 dark:bg-slate-800/95 backdrop-blur border-t border-slate-200 dark:border-slate-700 flex items-center justify-around py-1.5 px-2 z-20 no-print">
+      <!-- 1. Generator (Left) -->
+      <button onclick="switchTab('generator')" class="mobile-nav-link flex flex-col items-center justify-center w-16 py-1 text-brand-600 dark:text-brand-400 font-semibold" data-tab="generator">
+        <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+        </svg>
+        <span class="text-[10px]">Dashboard</span>
+      </button>
+
+      <!-- 2. Saved -->
+      <button onclick="switchTab('saved')" class="mobile-nav-link flex flex-col items-center justify-center w-16 py-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200" data-tab="saved">
+        <div class="relative">
+          <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+          </svg>
+          <span id="mobile-saved-badge" class="hidden absolute -top-1 -right-1 w-2 h-2 rounded-full bg-brand-600"></span>
+        </div>
+        <span class="text-[10px]">Saved</span>
+      </button>
+
+      <!-- 3. AI Tutor -->
+      <button onclick="switchTab('tutor')" class="mobile-nav-link flex flex-col items-center justify-center w-16 py-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200" data-tab="tutor">
+        <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+        </svg>
+        <span class="text-[10px]">AI Tutor</span>
+      </button>
+
+      <!-- 4. Settings -->
+      <button onclick="switchTab('settings')" class="mobile-nav-link flex flex-col items-center justify-center w-16 py-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200" data-tab="settings">
+        <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+        <span class="text-[10px]">Settings</span>
+      </button>
+    </nav>
+
+  </main>
+
+  <!-- ==================== QUICK THEME SELECTOR MODAL ==================== -->
+  <div id="quick-theme-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 transition-opacity duration-200">
+    <div class="bg-white dark:bg-slate-850 dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-2xl max-w-md w-full p-5 sm:p-6 overflow-hidden relative animate-in fade-in zoom-in-95">
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between pb-3.5 border-b border-slate-100 dark:border-slate-700">
+        <div class="flex items-center space-x-2.5">
+          <div class="w-9 h-9 rounded-xl bg-brand-50 dark:bg-brand-900/40 text-brand-600 dark:text-brand-300 flex items-center justify-center font-bold text-base border border-brand-200/60 dark:border-brand-800/60">
+            🎨
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white">Premium Color Themes</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Select your active aesthetic style</p>
+          </div>
+        </div>
+        <button onclick="toggleThemeModal(false)" class="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+          ✕
+        </button>
+      </div>
+
+      <!-- Themes List in Modal -->
+      <div class="py-4 grid grid-cols-2 gap-2.5 max-h-[60vh] overflow-y-auto" id="modal-theme-grid">
+        <!-- 1. Oxford Indigo -->
+        <button onclick="selectColorTheme('indigo'); toggleThemeModal(false);" data-theme-id="indigo" class="theme-card active-theme flex items-center space-x-3 p-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-700 text-left transition hover:border-brand-500">
+          <span class="w-7 h-7 rounded-xl bg-gradient-to-tr from-[#4f46e5] to-[#7c3aed] shrink-0 shadow-sm flex items-center justify-center text-white text-[10px] font-bold">✓</span>
+          <div class="min-w-0 flex-1">
+            <p class="text-xs font-bold text-slate-900 dark:text-white truncate">Oxford Indigo</p>
+            <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate">Academic</p>
+          </div>
+        </button>
+
+        <!-- 2. Emerald Ivy -->
+        <button onclick="selectColorTheme('emerald'); toggleThemeModal(false);" data-theme-id="emerald" class="theme-card flex items-center space-x-3 p-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-700 text-left transition hover:border-brand-500">
+          <span class="w-7 h-7 rounded-xl bg-gradient-to-tr from-[#059669] to-[#0d9488] shrink-0 shadow-sm flex items-center justify-center text-white text-[10px] font-bold"></span>
+          <div class="min-w-0 flex-1">
+            <p class="text-xs font-bold text-slate-900 dark:text-white truncate">Emerald Ivy</p>
+            <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate">Cambridge</p>
+          </div>
+        </button>
+
+        <!-- 3. Royal Amethyst -->
+        <button onclick="selectColorTheme('amethyst'); toggleThemeModal(false);" data-theme-id="amethyst" class="theme-card flex items-center space-x-3 p-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-700 text-left transition hover:border-brand-500">
+          <span class="w-7 h-7 rounded-xl bg-gradient-to-tr from-[#9333ea] to-[#c026d3] shrink-0 shadow-sm flex items-center justify-center text-white text-[10px] font-bold"></span>
+          <div class="min-w-0 flex-1">
+            <p class="text-xs font-bold text-slate-900 dark:text-white truncate">Royal Amethyst</p>
+            <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate">Imperial</p>
+          </div>
+        </button>
+
+        <!-- 4. Bourbon Amber -->
+        <button onclick="selectColorTheme('amber'); toggleThemeModal(false);" data-theme-id="amber" class="theme-card flex items-center space-x-3 p-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-700 text-left transition hover:border-brand-500">
+          <span class="w-7 h-7 rounded-xl bg-gradient-to-tr from-[#d97706] to-[#ea580c] shrink-0 shadow-sm flex items-center justify-center text-white text-[10px] font-bold"></span>
+          <div class="min-w-0 flex-1">
+            <p class="text-xs font-bold text-slate-900 dark:text-white truncate">Bourbon Amber</p>
+            <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate">Vintage</p>
+          </div>
+        </button>
+
+        <!-- 5. Nordic Ocean -->
+        <button onclick="selectColorTheme('ocean'); toggleThemeModal(false);" data-theme-id="ocean" class="theme-card flex items-center space-x-3 p-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-700 text-left transition hover:border-brand-500">
+          <span class="w-7 h-7 rounded-xl bg-gradient-to-tr from-[#0284c7] to-[#0891b2] shrink-0 shadow-sm flex items-center justify-center text-white text-[10px] font-bold"></span>
+          <div class="min-w-0 flex-1">
+            <p class="text-xs font-bold text-slate-900 dark:text-white truncate">Nordic Ocean</p>
+            <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate">Precision</p>
+          </div>
+        </button>
+
+        <!-- 6. Rose & Merlot -->
+        <button onclick="selectColorTheme('rose'); toggleThemeModal(false);" data-theme-id="rose" class="theme-card flex items-center space-x-3 p-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-700 text-left transition hover:border-brand-500">
+          <span class="w-7 h-7 rounded-xl bg-gradient-to-tr from-[#e11d48] to-[#db2777] shrink-0 shadow-sm flex items-center justify-center text-white text-[10px] font-bold"></span>
+          <div class="min-w-0 flex-1">
+            <p class="text-xs font-bold text-slate-900 dark:text-white truncate">Rose &amp; Merlot</p>
+            <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate">Luxury</p>
+          </div>
+        </button>
+      </div>
+
+      <!-- Footer action -->
+      <div class="pt-3 border-t border-slate-100 dark:border-slate-700 flex items-center justify-between text-xs">
+        <span class="text-slate-400 text-[11px]">Instant live preview</span>
+        <button onclick="toggleThemeModal(false)" class="px-4 py-1.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold transition">
+          Done
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification element -->
+  <div id="toast" class="fixed top-4 right-4 z-50 transform translate-y-[-120%] opacity-0 transition-all duration-300 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl flex items-center space-x-2 text-xs font-semibold">
+    <span id="toast-icon">✅</span>
+    <span id="toast-message">Notification</span>
+  </div>
+
+  <!-- Application Script -->
+  <script src="app.js"></script>
+</body>
+</html>

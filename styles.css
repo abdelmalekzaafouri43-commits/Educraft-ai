@@ -1,0 +1,63 @@
+/* Print styles for clean educational worksheets */
+@media print {
+  body {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+  }
+  
+  /* Hide interactive app UI elements during print */
+  header, nav, #bottom-nav, #sidebar, .no-print, button, .action-buttons {
+    display: none !important;
+  }
+  
+  #main-content {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+  }
+
+  .print-only-container {
+    display: block !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+  }
+
+  .worksheet-paper {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    page-break-after: always;
+  }
+
+  .answer-key-section {
+    page-break-before: always;
+  }
+}
+
+/* Custom transitions and scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.4);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.7);
+}
+
+/* Touch feedback and active transitions */
+.tap-highlight-none {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Printable worksheet styling simulation */
+.worksheet-rule {
+  border-bottom: 1.5px dashed #cbd5e1;
+  height: 1.75rem;
+}
