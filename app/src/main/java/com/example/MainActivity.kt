@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
                 allowContentAccess = true
                 useWideViewPort = true
                 loadWithOverviewMode = true
-                cacheMode = WebSettings.LOAD_NO_CACHE
+                cacheMode = WebSettings.LOAD_DEFAULT
                 mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
             }
 
